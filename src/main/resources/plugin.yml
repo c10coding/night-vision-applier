@@ -1,0 +1,12 @@
+name: NVApplier
+version: ${project.version}
+main: net.dohaw.nvapplier.NVApplier
+api-version: 1.13
+
+commands:
+  nightvision:
+    aliases:
+      - nv
+      - nightv
+      - nvision
+      - nvi
