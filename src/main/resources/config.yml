@@ -1,0 +1,12 @@
+# Allows you to define the applicable items
+Applicable Item Keywords:
+  night_vision:
+    - "helmet"
+    - "pumpkin"
+  jump_boost:
+
+# Restricts certain items via keywords.
+Restricted Item Keywords:
+  night_vision:
+    - "diamond"
+    - "iron"

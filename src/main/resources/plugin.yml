@@ -1,12 +1,12 @@
-name: NVApplier
+name: PotionMarker
 version: ${project.version}
-main: net.dohaw.nvapplier.NVApplier
+main: net.dohaw.potionmarker.PotionMarkerPlugin
 api-version: 1.13
 
 commands:
-  nightvision:
+  potionmarker:
     aliases:
-      - nv
-      - nightv
-      - nvision
-      - nvi
+      - pma
+      - potionm
+      - pmark
+      - pmarker
