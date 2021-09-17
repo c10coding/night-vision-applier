@@ -1,0 +1,12 @@
+name: PotionMarker
+version: 1.0-SNAPSHOT
+main: net.dohaw.potionmarker.PotionMarkerPlugin
+api-version: 1.13
+
+commands:
+  potionmarker:
+    aliases:
+      - pma
+      - potionm
+      - pmark
+      - pmarker
