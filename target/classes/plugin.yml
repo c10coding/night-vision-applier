@@ -10,3 +10,11 @@ commands:
       - potionm
       - pmark
       - pmarker
+
+permissions:
+  potionmarker.mark:
+    default: op
+    description: Allows players to mark their items
+  potionmarker.reload:
+    default: op
+    description: Permission to reload the plugin

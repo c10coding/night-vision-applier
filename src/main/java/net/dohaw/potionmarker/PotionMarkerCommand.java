@@ -22,6 +22,19 @@ public class PotionMarkerCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if(args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+
+            if(!sender.hasPermission("potionmarker.reload")){
+                sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                return false;
+            }
+
+            plugin.reloadData();
+            sender.sendMessage(ChatColor.BLUE + "The config has been reloaded!");
+            return true;
+
+        }
+
         if(!(sender instanceof Player)){
             sender.sendMessage(ChatColor.RED + "Only players can use this command!");
             return false;
@@ -31,6 +44,7 @@ public class PotionMarkerCommand implements CommandExecutor {
 
         Player pSender = (Player) sender;
         ItemStack itemInHand = pSender.getEquipment().getItemInMainHand();
+
         if(itemInHand.getType() == Material.AIR){
             sender.sendMessage(ChatColor.RED + "You have no item in your main hand!");
             return false;
@@ -71,7 +85,18 @@ public class PotionMarkerCommand implements CommandExecutor {
             return false;
         }
 
-        plugin.markItem(itemInHand, potionType, Integer.parseInt(potionLevelArg), Integer.parseInt(potionDurationArg));
+        int potionLevel = Integer.parseInt(potionLevelArg);
+        int potionDuration = Integer.parseInt(potionDurationArg) * 20;
+        if(potionDuration == 0){
+            potionDuration = Integer.MAX_VALUE;
+        }
+
+        if(!sender.hasPermission("potionmarker.mark")){
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+            return false;
+        }
+
+        plugin.markItem(itemInHand, potionType, potionLevel - 1, potionDuration);
         sender.sendMessage(ChatColor.BLUE + "This item has been marked!");
 
         return true;

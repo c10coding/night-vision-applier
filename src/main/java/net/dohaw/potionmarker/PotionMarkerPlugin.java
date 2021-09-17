@@ -1,10 +1,14 @@
 package net.dohaw.potionmarker;
 
+import com.codingforcookies.armorequip.ArmorEquipEvent;
+import com.codingforcookies.armorequip.ArmorListener;
 import net.dohaw.corelib.CoreLib;
 import net.dohaw.corelib.JPUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -12,14 +16,16 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
-public final class PotionMarkerPlugin extends JavaPlugin {
+/**
+ * @author c10coding on Github
+ * Plugin that allows players to mark
+ */
+public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
 
     private final String POTION_ON_EQUIP_LEVEL_KEY_NAME = "potion-on-equip-level";
     private final String POTION_ON_EQUIP_DURATION_KEY_NAME = "potion-on-equip-duration";
@@ -43,6 +49,7 @@ public final class PotionMarkerPlugin extends JavaPlugin {
         this.potionMarkerKey = new NamespacedKey(this, "potion-marker");
 
         JPUtils.registerCommand("potionmarker", new PotionMarkerCommand(this));
+        JPUtils.registerEvents(new ArmorListener(new ArrayList<>()), this);
 
     }
 
@@ -100,7 +107,16 @@ public final class PotionMarkerPlugin extends JavaPlugin {
     public void applyEffects(Player player, ItemStack stack){
         List<PotionEffect> potionsApplied = getPotionsAppliedOnEquip(stack);
         for(PotionEffect potion : potionsApplied){
-            player.addPotionEffect(potion);
+            if(canBeAppliedToItem(stack, potion.getType())){
+                player.addPotionEffect(potion);
+            }
+        }
+    }
+
+    public void removeEffects(Player player, ItemStack stack){
+        List<PotionEffect> potionsApplied = getPotionsAppliedOnEquip(stack);
+        for(PotionEffect potion : potionsApplied){
+            player.removePotionEffect(potion.getType());
         }
     }
 
@@ -113,7 +129,6 @@ public final class PotionMarkerPlugin extends JavaPlugin {
 
         String comparedName = meta.hasDisplayName() ? meta.getDisplayName().toLowerCase() : stack.getType().toString().toLowerCase();
 
-        System.out.println("COMPARED NAME: " + comparedName);
         if(!isApplicableItem(comparedName, potionType)){
             return false;
         }
@@ -140,11 +155,20 @@ public final class PotionMarkerPlugin extends JavaPlugin {
 
     }
 
+    public void reloadData(){
+        baseConfig.reloadConfig();
+        allApplicableItemKeywords = baseConfig.getApplicableItemKeywords();
+        allRestrictedItemKeywords = baseConfig.getRestrictedItemKeywords();
+    }
+
     private boolean isRestrictedItem(String itemName, PotionEffectType potionType){
 
         List<String> restrictedItemKeywords = allRestrictedItemKeywords.get(potionType.getName().toLowerCase());
+//        if(restrictedItemKeywords == null){
+//            getLogger().severe("The potion type " + potionType.getName() + " doesn't have a valid key within the \"Restricted Potions Section\" of your config");
+//            return false;
+//        }
         if(restrictedItemKeywords == null){
-            getLogger().severe("The potion type " + potionType.getName() + " doesn't have a valid key within the \"Restricted Potions Section\" of your config");
             return false;
         }
 
@@ -155,6 +179,25 @@ public final class PotionMarkerPlugin extends JavaPlugin {
         }
 
         return false;
+
+    }
+
+    @EventHandler
+    public void onEquipArmor(ArmorEquipEvent e){
+
+        ItemStack newArmor = e.getNewArmorPiece();
+        ItemStack oldArmor = e.getOldArmorPiece();
+        Player player = e.getPlayer();
+
+        // Unequipping
+        if(oldArmor != null && oldArmor.getType() != Material.AIR){
+            removeEffects(player, oldArmor);
+        }
+
+        // Equipping
+        if(e.getNewArmorPiece() != null && newArmor.getType() != Material.AIR){
+            applyEffects(player, newArmor);
+        }
 
     }
 

@@ -76,5 +76,10 @@
             <artifactId>CoreLib</artifactId>
             <version>3.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>plugin.deps</groupId>
+            <artifactId>ArmorEquipEvent</artifactId>
+            <version>1.7.6</version>
+        </dependency>
     </dependencies>
 </project>
