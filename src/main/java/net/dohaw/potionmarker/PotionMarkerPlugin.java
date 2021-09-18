@@ -104,7 +104,6 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
 
     public void applyEffects(Player player, ItemStack stack){
         List<PotionEffect> potionsApplied = getPotionsAppliedOnEquip(stack);
-        System.out.println("POTIONS APPLIED: " + potionsApplied);
         for(PotionEffect potion : potionsApplied){
             if(canBeAppliedToItem(stack, potion.getType())){
                 player.addPotionEffect(potion);
@@ -127,7 +126,6 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
         }
 
         String comparedName = meta.hasDisplayName() ? meta.getDisplayName().toLowerCase() : stack.getType().toString().toLowerCase();
-        System.out.println("COMPARED NAME: " + comparedName);
         if(!isApplicableItem(comparedName, potionType)){
             return false;
         }
