@@ -54,9 +54,7 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
     }
 
     @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
+    public void onDisable() { }
 
     public void markItem(ItemStack stack, PotionEffectType potionType, int level, int duration){
 
@@ -75,12 +73,12 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
 
     }
 
-    public boolean isMarkedItem(ItemStack stack){
-        if(stack == null){
-            return false;
-        }
-        return stack.getItemMeta().getPersistentDataContainer().has(potionMarkerKey, PersistentDataType.STRING);
-    }
+//    public boolean isMarkedItem(ItemStack stack){
+//        if(stack == null){
+//            return false;
+//        }
+//        return stack.getItemMeta().getPersistentDataContainer().has(potionMarkerKey, PersistentDataType.STRING);
+//    }
 
     private List<PotionEffect> getPotionsAppliedOnEquip(ItemStack stack){
 
@@ -106,6 +104,7 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
 
     public void applyEffects(Player player, ItemStack stack){
         List<PotionEffect> potionsApplied = getPotionsAppliedOnEquip(stack);
+        System.out.println("POTIONS APPLIED: " + potionsApplied);
         for(PotionEffect potion : potionsApplied){
             if(canBeAppliedToItem(stack, potion.getType())){
                 player.addPotionEffect(potion);
@@ -128,7 +127,7 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
         }
 
         String comparedName = meta.hasDisplayName() ? meta.getDisplayName().toLowerCase() : stack.getType().toString().toLowerCase();
-
+        System.out.println("COMPARED NAME: " + comparedName);
         if(!isApplicableItem(comparedName, potionType)){
             return false;
         }
@@ -146,7 +145,7 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
         }
 
         for(String keyword : applicableItemKeywords){
-            if(itemName.contains(keyword)){
+            if(itemName.contains(keyword.toLowerCase())){
                 return true;
             }
         }
@@ -173,7 +172,7 @@ public final class PotionMarkerPlugin extends JavaPlugin implements Listener {
         }
 
         for(String keyword : restrictedItemKeywords){
-            if(itemName.contains(keyword)){
+            if(itemName.contains(keyword.toLowerCase())){
                 return true;
             }
         }
